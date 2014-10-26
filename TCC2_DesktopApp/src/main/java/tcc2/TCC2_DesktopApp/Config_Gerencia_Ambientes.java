@@ -61,6 +61,13 @@ public class Config_Gerencia_Ambientes extends JFrame {
 	BasicDBObject documento = new BasicDBObject();
 	BasicDBObject search_atualizacao = new BasicDBObject();
 
+	final DefaultListModel listModel = new DefaultListModel();
+	final JList list;
+	JComboBox comboBox;
+	JComboBox comboBox_1;
+	JTextArea textArea;
+	JTextArea textArea_1;
+
 	/**
 	 * Launch the application.
 	 */
@@ -77,6 +84,8 @@ public class Config_Gerencia_Ambientes extends JFrame {
 		});
 	}
 
+	
+	
 	/**
 	 * Create the frame.
 	 */
@@ -87,11 +96,10 @@ public class Config_Gerencia_Ambientes extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		final JComboBox comboBox = new JComboBox();
-		final JComboBox comboBox_1 = new JComboBox();
-		final JTextArea textArea = new JTextArea();
-		final JTextArea textArea_1 = new JTextArea();
-		final DefaultListModel listModel = new DefaultListModel();
+		comboBox = new JComboBox();
+		comboBox_1 = new JComboBox();
+		textArea = new JTextArea();
+		textArea_1 = new JTextArea();
 		
 		DBCursor cursor = ambientes.find();
 		String ambiente;
@@ -99,7 +107,7 @@ public class Config_Gerencia_Ambientes extends JFrame {
 			ambiente = cursor.next().get("nome do ambiente").toString();
 			listModel.addElement(ambiente);
 		}
-		final JList list = new JList(listModel);
+		list = new JList(listModel);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -130,15 +138,8 @@ public class Config_Gerencia_Ambientes extends JFrame {
 				updateObj.put("$set", newDocument);
 								
 				ambientes.update(search_atualizacao, newDocument);
-				
-				DBCursor cursor_1 = ambientes.find();
-				String ambiente_updated;
-				listModel.clear();
-				while (cursor_1.hasNext()) {
-					ambiente_updated = cursor_1.next().get("nome do ambiente").toString();
-					listModel.addElement(ambiente_updated);
-				}
-				list.validate();
+				limpaCampos();
+				atualizaList();
 								
 			}
 		});
@@ -196,13 +197,11 @@ public class Config_Gerencia_Ambientes extends JFrame {
 		btnLimpar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				comboBox.setSelectedItem("");
-				comboBox_1.setSelectedItem("");	
-				textField.setText("");
-				textField_1.setText("");
-				textField_2.setText("");
-				textArea.setText("");
-				textArea_1.setText("");
+				DBCursor cursor = ambientes.find(search_atualizacao);
+				ambientes.remove(search_atualizacao);		
+				limpaCampos();
+				atualizaList();
+				
 			}
 		});
 		btnLimpar.addActionListener(new ActionListener() {
@@ -366,4 +365,27 @@ public class Config_Gerencia_Ambientes extends JFrame {
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
+	public void atualizaList()
+	{
+		DBCursor cursor_1 = ambientes.find();
+		String ambiente_updated;
+		listModel.clear();
+		while (cursor_1.hasNext()) {
+			ambiente_updated = cursor_1.next().get("nome do ambiente").toString();
+			listModel.addElement(ambiente_updated);
+		}
+		list.validate();
+	}
+	
+	public void limpaCampos()
+	{
+		comboBox.setSelectedItem("");
+		comboBox_1.setSelectedItem("");	
+		textField.setText("");
+		textField_1.setText("");
+		textField_2.setText("");
+		textArea.setText("");
+		textArea_1.setText("");
+	}
+	
 }
