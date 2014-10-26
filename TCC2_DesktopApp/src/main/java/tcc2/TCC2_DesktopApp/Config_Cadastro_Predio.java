@@ -9,19 +9,36 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.MongoClient;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.UnknownHostException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Config_Cadastro_Predio extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
+	MongoClient mongoClient = new MongoClient();
+	DB db = mongoClient.getDB("TCC2_Data");
+	DBCollection predio = db.getCollection("Macroambiente");
+	BasicDBObject documento = new BasicDBObject();
 
 	/**
 	 * Launch the application.
@@ -42,17 +59,49 @@ public class Config_Cadastro_Predio extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Config_Cadastro_Predio() {
+	public Config_Cadastro_Predio() throws UnknownHostException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 445, 310);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+
+		final JTextArea textArea = new JTextArea();
+		
+		final JTextArea textArea_1 = new JTextArea();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				documento.put("andares", textField.getText());
+				String[] tipos_ambientes = textArea.getText().split(";");
+				BasicDBList tipos_ambiente = new BasicDBList();
+				for (int i = 0; i < tipos_ambientes.length; i++)
+				{
+					tipos_ambiente.add(tipos_ambientes[i]);
+				}
+				documento.put("tipos de ambiente", tipos_ambiente);
+
+				String[] tipos_objetos = textArea_1.getText().split(";");
+				BasicDBList tipos_objeto = new BasicDBList();
+				for (int i = 0; i < tipos_objetos.length; i++)
+				{
+					tipos_objeto.add(tipos_objetos[i]);
+				}
+				documento.put("tipos de objeto", tipos_objeto);
+				
+				predio.insert(documento);
+				
+				DBCursor cursor = predio.find();
+				while (cursor.hasNext()) {
+					System.out.println(cursor.next());
+				}
+			}
+		});
 		
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {
@@ -87,9 +136,7 @@ public class Config_Cadastro_Predio extends JFrame {
 		
 		JLabel lblTiposDeAmbiente = new JLabel("Tipos de Ambiente:");
 		
-		JTextArea textArea = new JTextArea();
-		
-		JTextArea textArea_1 = new JTextArea();
+
 		
 		JLabel lblTiposDeObjeto = new JLabel("Tipos de Objeto:");
 		GroupLayout gl_panel = new GroupLayout(panel);

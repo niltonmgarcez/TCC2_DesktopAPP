@@ -6,8 +6,10 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.net.UnknownHostException;
 
 public class MainWindow {
 
@@ -56,8 +58,14 @@ public class MainWindow {
 		JMenuItem mntmPrdio = new JMenuItem("Prédio");
 		mntmPrdio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Config_Cadastro_Predio CCP = new Config_Cadastro_Predio();
-				CCP.setVisible(true);
+				Config_Cadastro_Predio CCP;
+				try {
+					CCP = new Config_Cadastro_Predio();
+					CCP.setVisible(true);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 		});
