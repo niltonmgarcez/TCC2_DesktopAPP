@@ -77,6 +77,10 @@ public class Config_Cadastro_Predio extends JFrame {
 		btnCadastrar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				//BasicDBObject searchQuery = new BasicDBObject();
+				//searchQuery.put("predio_ID", "1");
+				//predio.remove(searchQuery);
+				documento.put("predio_ID", "1");
 				documento.put("andares", textField.getText());
 				String[] tipos_ambientes = textArea.getText().split(";");
 				BasicDBList tipos_ambiente = new BasicDBList();
@@ -95,7 +99,7 @@ public class Config_Cadastro_Predio extends JFrame {
 				documento.put("tipos de objeto", tipos_objeto);
 				
 				predio.insert(documento);
-				
+						
 				DBCursor cursor = predio.find();
 				while (cursor.hasNext()) {
 					System.out.println(cursor.next());

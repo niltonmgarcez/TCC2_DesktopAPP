@@ -1,6 +1,7 @@
 package tcc2.TCC2_DesktopApp;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,7 +10,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
+
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -17,12 +20,36 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 
+import org.bson.BSONObject;
+import org.bson.types.BasicBSONList;
+
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.MongoClient;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.net.UnknownHostException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 public class Config_Cadastro_Ambientes extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
+	MongoClient mongoClient = new MongoClient();
+	DB db = mongoClient.getDB("TCC2_Data");
+	DBCollection predio = db.getCollection("Macroambiente");
+	DBCollection ambientes = db.getCollection("Ambientes");
+	BasicDBObject documento = new BasicDBObject();
 
 	/**
 	 * Launch the application.
@@ -43,21 +70,101 @@ public class Config_Cadastro_Ambientes extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Config_Cadastro_Ambientes() {
+	public Config_Cadastro_Ambientes() throws UnknownHostException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 589, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
+		final JComboBox comboBox = new JComboBox();
+		final JComboBox comboBox_1 = new JComboBox();
+		final JTextArea textArea = new JTextArea();
+		final JTextArea textArea_1 = new JTextArea();
+		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JButton btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				documento.clear();
+				String tamanhoTabela = String.valueOf(ambientes.getCount() + 1);
+				documento.put("ambiente_ID", tamanhoTabela);
+				documento.put("tipo de ambiente", comboBox.getSelectedItem());
+				if (comboBox_1.getSelectedItem().equals("Térreo"))
+				{
+					documento.put("andar", "1");
+				}else{
+					documento.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
+				}
+				documento.put("nome do ambiente", textField.getText());
+				documento.put("latitude", textField_1.getText());
+				documento.put("longitude", textField_2.getText());
+				documento.put("resumo", textArea.getText());
+				documento.put("descricao", textArea_1.getText());
+				
+				ambientes.insert(documento);
+						
+				DBCursor cursor = ambientes.find();
+				while (cursor.hasNext()) {
+					System.out.println(cursor.next());
+				}
+				
+			}
+		});
 		
+		BasicDBObject searchQuery = new BasicDBObject();
+		searchQuery.put("predio_ID", "1");
+		DBCursor result = predio.find(searchQuery);
+	    Pattern pattern = Pattern.compile("\"(.*?)\"");
+		DBObject oneDetails = result.next();
+	    String data=oneDetails.get("tipos de ambiente").toString();
+	    Matcher matcher = pattern.matcher(data);
+	    
+		while (matcher.find()) {  
+	        String text = matcher.group(1);
+	        comboBox.addItem(text);
+		}
+		
+		Integer andares = Integer.parseInt(oneDetails.get("andares").toString());
+		int count = 1;
+		while (count <= andares) {  
+			if (count == 1)
+			{
+				comboBox_1.addItem("Térreo");
+			}else{
+				comboBox_1.addItem(count + "º Andar");
+			}	        
+			count++;
+		}
+			
 		JButton btnLimpar = new JButton("Limpar");
+		btnLimpar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				comboBox.setSelectedItem("");
+				comboBox_1.setSelectedItem("");	
+				textField.setText("");
+				textField_1.setText("");
+				textField_2.setText("");
+				textArea.setText("");
+				textArea_1.setText("");
+			}
+		});
+		btnLimpar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
 		
 		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Config_Cadastro_Ambientes.this.dispose();
+			}
+		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -83,11 +190,9 @@ public class Config_Cadastro_Ambientes extends JFrame {
 		
 		JLabel lblTipoDeAmbiente = new JLabel("Tipo de Ambiente:");
 		
-		JComboBox comboBox = new JComboBox();
-		
+	
 		JLabel lblAndar = new JLabel("Andar:");
 		
-		JComboBox comboBox_1 = new JComboBox();
 		
 		JLabel lblNomeDoAmbiente = new JLabel("Nome do Ambiente:");
 		
@@ -106,11 +211,10 @@ public class Config_Cadastro_Ambientes extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("Resumo:");
 		
-		JTextArea textArea = new JTextArea();
-		
+	
 		JLabel lblDescrio = new JLabel("Descrição:");
 		
-		JTextArea textArea_1 = new JTextArea();
+
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
