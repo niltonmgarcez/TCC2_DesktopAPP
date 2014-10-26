@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainWindow {
 
@@ -52,6 +54,13 @@ public class MainWindow {
 		mnConfiguraes.add(mnCadastros);
 		
 		JMenuItem mntmPrdio = new JMenuItem("Prédio");
+		mntmPrdio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Config_Cadastro_Predio CCP = new Config_Cadastro_Predio();
+				CCP.setVisible(true);
+			}
+			
+		});
 		mnCadastros.add(mntmPrdio);
 		
 		JMenuItem mntmAmniente = new JMenuItem("Ambientes");
