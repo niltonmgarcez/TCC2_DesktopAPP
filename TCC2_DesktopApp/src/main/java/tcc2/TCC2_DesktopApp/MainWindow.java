@@ -137,9 +137,33 @@ public class MainWindow {
 		mnGerenciamento.add(mntmPrdio_1);
 		
 		JMenuItem mntmAmbientes = new JMenuItem("Ambientes");
+		mntmAmbientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Config_Gerencia_Ambientes CGA;
+				try {
+					CGA = new Config_Gerencia_Ambientes();
+					CGA.setVisible(true);
+				} catch (UnknownHostException e4) {
+					// TODO Auto-generated catch block
+					e4.printStackTrace();
+				}
+			}
+		});
 		mnGerenciamento.add(mntmAmbientes);
 		
 		JMenuItem mntmObjetos_1 = new JMenuItem("Objetos");
+		mntmObjetos_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Config_Gerencia_Objetos CGO;
+				try {
+					CGO = new Config_Gerencia_Objetos();
+					CGO.setVisible(true);
+				} catch (UnknownHostException e4) {
+					// TODO Auto-generated catch block
+					e4.printStackTrace();
+				}
+			}
+		});
 		mnGerenciamento.add(mntmObjetos_1);
 		
 		JMenu mnExportar = new JMenu("Exportar");
