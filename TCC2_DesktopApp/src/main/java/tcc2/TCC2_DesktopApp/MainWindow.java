@@ -122,6 +122,18 @@ public class MainWindow {
 		mnConfiguraes.add(mnGerenciamento);
 		
 		JMenuItem mntmPrdio_1 = new JMenuItem("Prédio");
+		mntmPrdio_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Config_Gerencia_Predio CGP;
+				try {
+					CGP = new Config_Gerencia_Predio();
+					CGP.setVisible(true);
+				} catch (UnknownHostException e4) {
+					// TODO Auto-generated catch block
+					e4.printStackTrace();
+				}
+			}
+		});
 		mnGerenciamento.add(mntmPrdio_1);
 		
 		JMenuItem mntmAmbientes = new JMenuItem("Ambientes");
