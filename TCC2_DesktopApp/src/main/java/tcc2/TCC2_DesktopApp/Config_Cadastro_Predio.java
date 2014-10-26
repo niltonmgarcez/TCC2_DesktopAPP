@@ -13,6 +13,7 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextArea;
@@ -39,6 +40,9 @@ public class Config_Cadastro_Predio extends JFrame {
 	DB db = mongoClient.getDB("TCC2_Data");
 	DBCollection predio = db.getCollection("Macroambiente");
 	BasicDBObject documento = new BasicDBObject();
+	JScrollPane scrollPane_1 = new JScrollPane();
+	JScrollPane scrollPane_2 = new JScrollPane();
+
 
 	/**
 	 * Launch the application.
@@ -69,6 +73,9 @@ public class Config_Cadastro_Predio extends JFrame {
 		final JTextArea textArea = new JTextArea();
 		
 		final JTextArea textArea_1 = new JTextArea();
+		
+		scrollPane_1.setViewportView(textArea);
+		scrollPane_2.setViewportView(textArea_1);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));

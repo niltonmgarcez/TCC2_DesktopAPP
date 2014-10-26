@@ -16,6 +16,7 @@ import java.awt.Color;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -45,6 +46,7 @@ import javax.swing.JList;
 
 import java.awt.Panel;
 import java.awt.List;
+
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 
@@ -62,6 +64,8 @@ public class Config_Gerencia_Objetos extends JFrame {
 	BasicDBObject search_atualizacao = new BasicDBObject();
 
 	final DefaultListModel listModel = new DefaultListModel();
+	JScrollPane scrollPane = new JScrollPane();
+	JScrollPane scrollPane_1 = new JScrollPane();
 	final JList list;
 	JComboBox comboBox;
 	JComboBox comboBox_1;
@@ -94,10 +98,13 @@ public class Config_Gerencia_Objetos extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
+
+		
 		
 		comboBox = new JComboBox();
 		comboBox_1 = new JComboBox();
 		textArea = new JTextArea();
+		scrollPane_1.setViewportView(textArea);
 		
 		DBCursor cursor = objetos.find();
 		String objeto;
@@ -106,6 +113,7 @@ public class Config_Gerencia_Objetos extends JFrame {
 			listModel.addElement(objeto);
 		}
 		list = new JList(listModel);
+		scrollPane.setViewportView(list);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));

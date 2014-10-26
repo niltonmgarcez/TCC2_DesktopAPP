@@ -172,45 +172,15 @@ public class MainWindow {
 		JMenuItem mntmArquivoJson = new JMenuItem("Arquivo JSON");
 		mntmArquivoJson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Seleciona_Path SP;
 				try {
-					//What ever the file path is.
-					        File predio_file = new File("C:/Users/Nilton Garcez/Desktop/Arquivos JSON/Macroambiente.json");
-					        FileOutputStream is = new FileOutputStream(predio_file);
-					        OutputStreamWriter osw = new OutputStreamWriter(is);    
-					        Writer w = new BufferedWriter(osw);					        
-					        DBCursor cursor = predio.find();
-							while (cursor.hasNext()) {
-								w.write(cursor.next().toString());
-							}
-							w.close();
-							
-							File ambientes_file = new File("C:/Users/Nilton Garcez/Desktop/Arquivos JSON/Ambientes.json");
-					        FileOutputStream FOS = new FileOutputStream(ambientes_file);
-					        OutputStreamWriter OSW_1 = new OutputStreamWriter(FOS);    
-					        Writer writer_1 = new BufferedWriter(OSW_1);					        
-					        
-					        cursor = ambientes.find();
-							while (cursor.hasNext()) {
-								writer_1.write(cursor.next().toString());
-							}
-							writer_1.close();
-
-							
-							File objetos_file = new File("C:/Users/Nilton Garcez/Desktop/Arquivos JSON/Objetos.json");
-					        FileOutputStream FOS_1 = new FileOutputStream(objetos_file);
-					        OutputStreamWriter OSW_2 = new OutputStreamWriter(FOS_1);    
-					        Writer writer_2 = new BufferedWriter(OSW_2);		
-					        
-					        cursor = objetos.find();
-							while (cursor.hasNext()) {
-								writer_2.write(cursor.next().toString());
-							}
-							writer_2.close();
-
-					       
-					    } catch (IOException e3) {
-					        System.err.println("Problem writing to the file statsTest.txt");
-					    }
+					SP = new Seleciona_Path();
+					SP.setVisible(true);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 		});
 		mnExportar.add(mntmArquivoJson);

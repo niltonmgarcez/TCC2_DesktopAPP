@@ -15,6 +15,7 @@ import java.awt.Color;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -50,6 +51,7 @@ public class Config_Cadastro_Objeto extends JFrame {
 	DBCollection predio = db.getCollection("Macroambiente");
 	DBCollection objetos = db.getCollection("Objetos");
 	BasicDBObject documento = new BasicDBObject();
+	JScrollPane scrollPane = new JScrollPane();
 
 	/**
 	 * Launch the application.
@@ -80,6 +82,8 @@ public class Config_Cadastro_Objeto extends JFrame {
 		final JComboBox comboBox = new JComboBox();
 		final JComboBox comboBox_1 = new JComboBox();
 		final JTextArea textArea = new JTextArea();
+
+		scrollPane.setViewportView(textArea);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
