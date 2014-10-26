@@ -3,6 +3,9 @@ package tcc2.TCC2_DesktopApp;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
 
 public class MainWindow {
 
@@ -38,6 +41,36 @@ public class MainWindow {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu mnConfiguraes = new JMenu("Configurações");
+		menuBar.add(mnConfiguraes);
+		
+		JMenu mnCadastros = new JMenu("Cadastros");
+		mnConfiguraes.add(mnCadastros);
+		
+		JMenuItem mntmPrdio = new JMenuItem("Prédio");
+		mnCadastros.add(mntmPrdio);
+		
+		JMenuItem mntmAmniente = new JMenuItem("Ambientes");
+		mnCadastros.add(mntmAmniente);
+		
+		JMenuItem mntmObjetos = new JMenuItem("Objetos");
+		mnCadastros.add(mntmObjetos);
+		
+		JMenu mnGerenciamento = new JMenu("Gerenciamento");
+		mnConfiguraes.add(mnGerenciamento);
+		
+		JMenuItem mntmPrdio_1 = new JMenuItem("Prédio");
+		mnGerenciamento.add(mntmPrdio_1);
+		
+		JMenuItem mntmAmbientes = new JMenuItem("Ambientes");
+		mnGerenciamento.add(mntmAmbientes);
+		
+		JMenuItem mntmObjetos_1 = new JMenuItem("Objetos");
+		mnGerenciamento.add(mntmObjetos_1);
 	}
 
 }
