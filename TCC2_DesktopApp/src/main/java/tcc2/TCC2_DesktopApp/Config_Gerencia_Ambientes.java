@@ -65,11 +65,12 @@ public class Config_Gerencia_Ambientes extends JFrame {
 
 	final DefaultListModel listModel = new DefaultListModel();
 	JScrollPane scrollPane = new JScrollPane();
+	final JList list;
 	
 	JScrollPane scrollPane_1 = new JScrollPane();
 	JScrollPane scrollPane_2 = new JScrollPane();
 
-	final JList list;
+	
 	JComboBox comboBox;
 	JComboBox comboBox_1;
 	JTextArea textArea;
@@ -128,8 +129,7 @@ public class Config_Gerencia_Ambientes extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				DBCursor cursor = ambientes.find(search_atualizacao);
-				BasicDBObject data = (BasicDBObject) cursor.next();
-				
+				BasicDBObject data = (BasicDBObject) cursor.next();				
 				BasicDBObject newDocument = new BasicDBObject();
 				newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
 				newDocument.put("tipo de ambiente", comboBox.getSelectedItem());

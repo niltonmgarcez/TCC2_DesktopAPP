@@ -85,6 +85,8 @@ public class Config_Cadastro_Objeto extends JFrame {
 
 		scrollPane.setViewportView(textArea);
 		
+		
+		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
