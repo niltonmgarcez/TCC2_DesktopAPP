@@ -11,6 +11,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
 import java.awt.event.ActionListener;
@@ -22,6 +23,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.UnknownHostException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainWindow {
 
@@ -184,6 +187,42 @@ public class MainWindow {
 			}
 		});
 		mnExportar.add(mntmArquivoJson);
+		
+		JMenu mnZerador = new JMenu("Zerador");
+		mnZerador.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				BasicDBObject searchPredio = new BasicDBObject();
+				searchPredio.put("predio_ID", "1");
+				predio.remove(searchPredio);
+				DBCursor cursor = predio.find();
+				while (cursor.hasNext()) {
+					System.out.println(cursor.next());
+				}
+				
+				BasicDBObject searchAmbiente = new BasicDBObject();
+				searchAmbiente.put("ambiente_ID", "1");
+				ambientes.remove(searchAmbiente);
+				cursor = predio.find();
+				while (cursor.hasNext()) {
+					System.out.println(cursor.next());
+				}
+				
+				BasicDBObject searchObjeto = new BasicDBObject();
+				searchObjeto.put("objeto_ID", "1");
+				ambientes.remove(searchObjeto);
+				cursor = predio.find();
+				while (cursor.hasNext()) {
+					System.out.println(cursor.next());
+				}
+			}
+		});
+		mnZerador.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		menuBar.add(mnZerador);
 	}
 
 }

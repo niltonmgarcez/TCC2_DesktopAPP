@@ -60,6 +60,7 @@ public class Config_Gerencia_Objetos extends JFrame {
 	DB db = mongoClient.getDB("TCC2_Data");
 	DBCollection predio = db.getCollection("Macroambiente");
 	DBCollection objetos = db.getCollection("Objetos");
+	DBCollection ambientes = db.getCollection("Ambientes");
 	BasicDBObject documento = new BasicDBObject();
 	BasicDBObject search_atualizacao = new BasicDBObject();
 
@@ -128,12 +129,7 @@ public class Config_Gerencia_Objetos extends JFrame {
 				BasicDBObject newDocument = new BasicDBObject();
 				newDocument.put("objeto_ID", data.get("objeto_ID").toString());
 				newDocument.put("tipo de objeto", comboBox.getSelectedItem());
-				if (comboBox_1.getSelectedItem().equals("Térreo"))
-				{
-					newDocument.put("andar", "1");
-				}else{
-					newDocument.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
-				}
+				newDocument.put("nome do ambiente", comboBox_1.getSelectedItem());				
 				newDocument.put("nome do objeto", textField.getText());	
 				newDocument.put("latitude", textField_1.getText());
 				newDocument.put("longitude", textField_2.getText());
@@ -163,16 +159,10 @@ public class Config_Gerencia_Objetos extends JFrame {
 	        comboBox.addItem(text);
 		}		
 		
-		Integer andares = Integer.parseInt(oneDetails.get("andares").toString());
-		int count = 1;
-		while (count <= andares) {  
-			if (count == 1)
-			{
-				comboBox_1.addItem("Térreo");
-			}else{
-				comboBox_1.addItem(count + "º Andar");
-			}	        
-			count++;
+		DBCursor result_ambientes = ambientes.find();
+		while(result_ambientes.hasNext())
+		{
+			comboBox_1.addItem(result_ambientes.next().get("nome do ambiente").toString());
 		}
 				
 		list.addMouseListener(new MouseAdapter() {
@@ -183,7 +173,7 @@ public class Config_Gerencia_Objetos extends JFrame {
 				DBCursor cursor = objetos.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();
 				comboBox.setSelectedItem(data.get("tipo de objeto").toString());
-				comboBox_1.setSelectedItem(data.get("andar").toString());
+				comboBox_1.setSelectedItem(data.get("nome do ambiente").toString());
 				textField.setText(data.get("nome do objeto").toString());
 				textField_1.setText(data.get("latitude").toString());
 				textField_2.setText(data.get("longitude").toString());
@@ -225,7 +215,7 @@ public class Config_Gerencia_Objetos extends JFrame {
 		JLabel lblTipoDeAmbiente = new JLabel("Tipo de Objeto:");
 		
 	
-		JLabel lblAndar = new JLabel("Andar:");
+		JLabel lblAndar = new JLabel("Ambiente:");
 		
 		
 		JLabel lblNomeDoAmbiente = new JLabel("Nome do Objeto:");
