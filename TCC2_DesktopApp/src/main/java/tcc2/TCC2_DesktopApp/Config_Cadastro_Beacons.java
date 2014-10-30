@@ -117,16 +117,10 @@ public class Config_Cadastro_Beacons extends JFrame {
 			}
 		});
 			
-		Integer andares = Integer.parseInt(oneDetails.get("andares").toString());
-		int count = 1;
-		while (count <= andares) {  
-			if (count == 1)
-			{
-				comboBox.addItem("Térreo");
-			}else{
-				comboBox.addItem(count + "º Andar");
-			}	        
-			count++;
+		DBCursor result_ambientes = ambientes.find();
+		while(result_ambientes.hasNext())
+		{
+			comboBox.addItem(result_ambientes.next().get("nome do ambiente").toString());
 		}
 		
 		textField = new JTextField();
