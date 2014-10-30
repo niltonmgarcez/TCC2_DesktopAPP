@@ -50,6 +50,7 @@ public class Config_Cadastro_Objeto extends JFrame {
 	DB db = mongoClient.getDB("TCC2_Data");
 	DBCollection predio = db.getCollection("Macroambiente");
 	DBCollection objetos = db.getCollection("Objetos");
+	DBCollection ambientes = db.getCollection("Ambientes");
 	BasicDBObject documento = new BasicDBObject();
 	JScrollPane scrollPane = new JScrollPane();
 
@@ -81,11 +82,9 @@ public class Config_Cadastro_Objeto extends JFrame {
 		
 		final JComboBox comboBox = new JComboBox();
 		final JComboBox comboBox_1 = new JComboBox();
-		final JTextArea textArea = new JTextArea();
-
-		scrollPane.setViewportView(textArea);
+	    final JTextArea textArea = new JTextArea();
 		
-		
+		scrollPane.setViewportView(textArea);		
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -98,12 +97,7 @@ public class Config_Cadastro_Objeto extends JFrame {
 				String tamanhoTabela = String.valueOf(objetos.getCount() + 1);
 				documento.put("objeto_ID", tamanhoTabela);
 				documento.put("tipo de objeto", comboBox.getSelectedItem());
-				if (comboBox_1.getSelectedItem().equals("Térreo"))
-				{
-					documento.put("andar", "1");
-				}else{
-					documento.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
-				}
+				documento.put("nome do ambiente", comboBox_1.getSelectedItem());
 				documento.put("nome do objeto", textField.getText());
 				documento.put("latitude", textField_1.getText());
 				documento.put("longitude", textField_2.getText());
@@ -132,18 +126,13 @@ public class Config_Cadastro_Objeto extends JFrame {
 	        comboBox.addItem(text);
 		}
 		
-		Integer andares = Integer.parseInt(oneDetails.get("andares").toString());
-		int count = 1;
-		while (count <= andares) {  
-			if (count == 1)
-			{
-				comboBox_1.addItem("Térreo");
-			}else{
-				comboBox_1.addItem(count + "º Andar");
-			}	        
-			count++;
+		DBCursor result_ambientes = ambientes.find();
+		while(result_ambientes.hasNext())
+		{
+			comboBox_1.addItem(result_ambientes.next().get("nome do ambiente").toString());
 		}
-			
+		
+		
 		JButton btnLimpar = new JButton("Limpar");
 		btnLimpar.addMouseListener(new MouseAdapter() {
 			@Override
@@ -196,7 +185,7 @@ public class Config_Cadastro_Objeto extends JFrame {
 		JLabel lblTipoDeAmbiente = new JLabel("Tipo de Objeto");
 		
 	
-		JLabel lblAndar = new JLabel("Andar:");
+		JLabel lblAndar = new JLabel("Ambiente:");
 		
 		
 		JLabel lblNomeDoAmbiente = new JLabel("Nome do Obejto");
