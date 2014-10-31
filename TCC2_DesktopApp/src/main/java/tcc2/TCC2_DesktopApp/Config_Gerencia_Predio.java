@@ -86,6 +86,8 @@ public class Config_Gerencia_Predio extends JFrame {
 		searchQuery.put("predio_ID", "1");
 		DBCursor result = predio.find(searchQuery);
 		DBObject oneDetails = result.next();
+		documento.put("nome", "Prédio 32 - PUCRS");
+		documento.put("descricao", "Faculdade de Informática");
 	    String andar =oneDetails.get("andares").toString();
         textField.setText(andar.toString());
 	    	
@@ -117,6 +119,8 @@ public class Config_Gerencia_Predio extends JFrame {
 				searchQuery.put("predio_ID", "1");
 				predio.remove(searchQuery);
 				documento.put("predio_ID", "1");
+				documento.put("nome", "Prédio 32 - PUCRS");
+				documento.put("descricao", "Faculdade de Informática");
 				documento.put("andares", textField.getText());
 				String[] tipos_ambientes = textArea.getText().split(";");
 				BasicDBList tipos_ambiente = new BasicDBList();

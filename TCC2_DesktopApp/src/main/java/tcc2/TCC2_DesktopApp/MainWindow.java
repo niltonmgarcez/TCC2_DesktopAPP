@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.UnknownHostException;
@@ -124,6 +125,21 @@ public class MainWindow {
 		});
 		mnCadastros.add(mntmObjetos);
 		
+		JMenuItem mntmBeacons = new JMenuItem("Beacons");
+		mntmBeacons.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Config_Cadastro_Beacons CCB;
+				try {
+					CCB = new Config_Cadastro_Beacons(); 
+					CCB.setVisible(true);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnCadastros.add(mntmBeacons);
+		
 		JMenu mnGerenciamento = new JMenu("Gerenciamento");
 		mnConfiguraes.add(mnGerenciamento);
 		
@@ -173,15 +189,35 @@ public class MainWindow {
 		mnGerenciamento.add(mntmObjetos_1);
 		
 		JMenu mnExportar = new JMenu("Exportar");
+		mnExportar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ProcessBuilder builder = new ProcessBuilder(
+						"cmd /c mongoexport --host ds047440.mongolab.com --port 47440 --username niltongarcez --password trabalho2 --collection Macroambiente --db tcc2_data --out macroambiente.json");
+			        builder.redirectErrorStream(true);
+			        try {
+						Process p = builder.start();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			        
+			}
+		});
+		
+	
 		menuBar.add(mnExportar);
 		
 		JMenuItem mntmArquivoJson = new JMenuItem("Arquivo JSON");
 		mntmArquivoJson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Seleciona_Path SP;
 				try {
-					SP = new Seleciona_Path();
-					SP.setVisible(true);
+					Macroambiente Macro= new Macroambiente();
+					
+					System.out.println(Macro.getID());
+					System.out.println(Macro.getNome());
+					System.out.println(Macro.getDescricao());
+					System.out.println(Macro.getAmbiente("Sala 203"));
+					System.out.println(Macro.getAmbientes());
 				} catch (UnknownHostException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -190,42 +226,6 @@ public class MainWindow {
 			}
 		});
 		mnExportar.add(mntmArquivoJson);
-		
-		JMenu mnZerador = new JMenu("Zerador");
-		mnZerador.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				BasicDBObject searchPredio = new BasicDBObject();
-				searchPredio.put("predio_ID", "1");
-				predio.remove(searchPredio);
-				DBCursor cursor = predio.find();
-				while (cursor.hasNext()) {
-					System.out.println(cursor.next());
-				}
-				
-				BasicDBObject searchAmbiente = new BasicDBObject();
-				searchAmbiente.put("ambiente_ID", "1");
-				ambientes.remove(searchAmbiente);
-				cursor = predio.find();
-				while (cursor.hasNext()) {
-					System.out.println(cursor.next());
-				}
-				
-				BasicDBObject searchObjeto = new BasicDBObject();
-				searchObjeto.put("objeto_ID", "1");
-				ambientes.remove(searchObjeto);
-				cursor = predio.find();
-				while (cursor.hasNext()) {
-					System.out.println(cursor.next());
-				}
-			}
-		});
-		mnZerador.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		menuBar.add(mnZerador);
 	}
 
 }

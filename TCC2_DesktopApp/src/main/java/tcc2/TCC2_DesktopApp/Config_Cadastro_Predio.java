@@ -91,6 +91,8 @@ public class Config_Cadastro_Predio extends JFrame {
 				//searchQuery.put("predio_ID", "1");
 				//predio.remove(searchQuery);
 				documento.put("predio_ID", "1");
+				documento.put("nome", "Prédio 32 - PUCRS");
+				documento.put("descricao", "Faculdade de Informática");
 				documento.put("andares", textField.getText());
 				String[] tipos_ambientes = textArea.getText().split(";");
 				BasicDBList tipos_ambiente = new BasicDBList();
