@@ -24,6 +24,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -41,8 +42,10 @@ public class Seleciona_Path extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
-	MongoClient mongoClient = new MongoClient();
-	DB db = mongoClient.getDB("TCC2_Data");
+	String textUri = "mongodb://niltongarcez:trabalho2@ds047440.mongolab.com:47440/tcc2_data";
+	MongoClientURI uri = new MongoClientURI(textUri);
+	MongoClient mongoClient = new MongoClient(uri);
+	DB db = mongoClient.getDB("tcc2_data");
 	DBCollection predio = db.getCollection("Macroambiente");
 	DBCollection ambientes = db.getCollection("Ambientes");
 	DBCollection objetos = db.getCollection("Objetos");
