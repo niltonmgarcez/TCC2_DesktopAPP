@@ -67,9 +67,5 @@ public class Macroambiente {
 		return data;		
 	}
 	
-	public String getAmbientes()
-	{
-			
-	}
 
 }
