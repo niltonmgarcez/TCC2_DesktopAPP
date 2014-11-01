@@ -90,6 +90,20 @@ public class MainWindow {
 		});
 		mnConfiguraes.add(mntmPrdio);
 		
+		JMenuItem mntmAmbientes = new JMenuItem("Ambientes");
+		mntmAmbientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Configuracao_Ambientes CA = new Configuracao_Ambientes();
+					CA.setVisible(true);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnConfiguraes.add(mntmAmbientes);
+		
 		JMenu mnExportar = new JMenu("Exportar");
 		mnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

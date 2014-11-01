@@ -167,6 +167,7 @@ public class Configuracao_Predio extends JFrame {
 				updateObj.put("$set", newDocument);
 								
 				predio.update(search_atualizacao, newDocument);
+				
 				textField.setText("");
 				textField_1.setText("");
 				textArea.setText("");
