@@ -18,7 +18,7 @@ public class Ambiente {
 	float posY;
 	String resumo;
 	String descricao;
-	ArrayList<Ambiente> listAmbiente = new ArrayList<Ambiente>();
+	String listAmbiente;
 	/**
 	 * @param tipo
 	 * @param andar
@@ -30,8 +30,7 @@ public class Ambiente {
 	 * @param listAmbiente
 	 */
 	public Ambiente(String tipo, int andar, String identificacao, float posX,
-			float posY, String resumo, String descricao,
-			ArrayList<Ambiente> listAmbiente) {
+			float posY, String resumo, String descricao, String listAmbiente) {
 		super();
 		this.tipo = tipo;
 		this.andar = andar;
@@ -84,12 +83,10 @@ public class Ambiente {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public ArrayList<Ambiente> getListAmbiente() {
+	public String getListAmbiente() {
 		return listAmbiente;
 	}
-	public void setListAmbiente(ArrayList<Ambiente> listAmbiente) {
+	public void setListAmbiente(String listAmbiente) {
 		this.listAmbiente = listAmbiente;
 	}
-	
-	
 }
