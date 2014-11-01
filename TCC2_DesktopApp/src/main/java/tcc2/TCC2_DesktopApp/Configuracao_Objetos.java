@@ -6,6 +6,7 @@ package tcc2.TCC2_DesktopApp;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
+import javax.naming.ldap.Rdn;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -13,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
 
 import java.awt.Color;
 
@@ -48,6 +50,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JRadioButton;
+
 /**
  * @author Nilton Mena Garcez
  *
@@ -61,19 +65,23 @@ public class Configuracao_Objetos extends JFrame {
 	MongoClientURI uri = new MongoClientURI(textUri);
 	MongoClient mongoClient = new MongoClient(uri);
 	DB db = mongoClient.getDB("tcc2_data");
-	DBCollection predio = db.getCollection("Macroambiente");
+	DBCollection objetos = db.getCollection("Objetos");
 	DBCollection ambientes = db.getCollection("Ambientes");
 	BasicDBObject documento = new BasicDBObject();
 	final DefaultListModel listModel = new DefaultListModel();
 	BasicDBObject search_atualizacao = new BasicDBObject();
 	Pattern pattern = Pattern.compile("\"(.*?)\"");
 	JScrollPane scrollpane = new JScrollPane();
-	final JTextArea textArea = new JTextArea();
 	final JTextArea textArea_1 = new JTextArea();
 
 	private JTextField textField_1;
 	private JTextField textField_2;
-	private JTextField textField_3;
+	
+	JRadioButton rdbtnAlta = new JRadioButton("Alta");
+	
+	JRadioButton rdbtnMdia = new JRadioButton("Média");
+	
+	JRadioButton rdbtnBaixa = new JRadioButton("Baixa");
 
 
 	/**
@@ -97,12 +105,11 @@ public class Configuracao_Objetos extends JFrame {
 	 */
 	public Configuracao_Objetos() throws UnknownHostException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 683, 352);
+		setBounds(100, 100, 666, 287);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		final JComboBox comboBox = new JComboBox();
-		final JComboBox comboBox_1 = new JComboBox();
 	
 		final JList list_1 = new JList(listModel);
 		
@@ -112,34 +119,27 @@ public class Configuracao_Objetos extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				search_atualizacao = new BasicDBObject();
-				search_atualizacao.put("nome do ambiente", list_1.getSelectedValue().toString());
-				DBCursor cursor = ambientes.find(search_atualizacao);
+				search_atualizacao.put("identificacao do objeto", list_1.getSelectedValue().toString());
+				DBCursor cursor = objetos.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();
-				comboBox.setSelectedItem(data.get("tipo de ambiente").toString());
-				if (data.get("andar").equals("1"))
-				{
-					comboBox_1.setSelectedItem("Térreo");
-				}else{
-					comboBox_1.setSelectedItem(data.get("andar").toString()+"º Andar");
-				}
+				comboBox.setSelectedItem(data.get("identificacao do ambiente").toString());
 				
-				textField.setText(data.get("nome do ambiente").toString());
+				textField.setText(data.get("identificacao do objeto").toString());
 				textField_1.setText(data.get("posicao em X").toString());
 				textField_2.setText(data.get("posicao em Y").toString());
-				textArea.setText(data.get("resumo").toString());
 				textArea_1.setText(data.get("descricao").toString());
-
-				String ambientes_inter = data.get("ambientes interligados").toString();
-			    if (!ambientes_inter.toString().isEmpty())
-			    {
-					Matcher matcher = pattern.matcher(ambientes_inter);
-				    String mensagem = "";
-					while (matcher.find()) {  
-				        String text = matcher.group(1);
-				        mensagem = mensagem + ";" + text;
-					}
-					textField_3.setText(mensagem.substring(1,mensagem.length()));
-			    }else{textField_3.setText("");}
+				switch(Integer.parseInt(data.get("criticidade").toString()))
+				{
+					case 1 : 
+						rdbtnAlta.setSelected(true);
+						break;
+					case 2 :
+						rdbtnMdia.setSelected(true);
+						break;
+					case 3 :
+						rdbtnBaixa.setSelected(true);
+						break;						
+				}				
 				System.out.println(data);
 			}
 		});
@@ -151,33 +151,17 @@ public class Configuracao_Objetos extends JFrame {
 		btnCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				documento.clear();
-				String tamanhoTabela = String.valueOf(ambientes.getCount() + 1);
-				documento.put("ambiente_ID", tamanhoTabela);
-				documento.put("tipo de ambiente", comboBox.getSelectedItem());
-				if (comboBox_1.getSelectedItem().equals("Térreo"))
-				{
-					documento.put("andar", "1");
-				}else{
-					documento.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
-				}
-				documento.put("nome do ambiente", textField.getText());
+				String tamanhoTabela = String.valueOf(objetos.getCount() + 1);
+				documento.put("objeto_ID", tamanhoTabela);
+				documento.put("identificacao do ambiente", comboBox.getSelectedItem());				
+				documento.put("identificacao do objeto", textField.getText());
 				documento.put("posicao em X", textField_1.getText());
 				documento.put("posicao em Y", textField_2.getText());
-				documento.put("resumo", textArea.getText());
 				documento.put("descricao", textArea_1.getText());
-				if (!textField_3.getText().isEmpty())
-				{
-					String[] amb_interligados = textField_3.getText().split(";");
-					BasicDBList tipos_ambiente = new BasicDBList();
-					for (int i = 0; i < amb_interligados.length; i++)
-					{
-						tipos_ambiente.add(amb_interligados[i]);
-						atualizaDependencias(textField.getText(), amb_interligados[i]);
-					}
-					documento.put("ambientes interligados", tipos_ambiente);
-				}else{documento.put("ambientes interligados", "");}
-				ambientes.insert(documento);				
-						
+				if (rdbtnAlta.isSelected()){documento.put("criticidade", "1");}	
+				else if (rdbtnMdia.isSelected()){documento.put("criticidade", "2");}	
+				else if (rdbtnBaixa.isSelected()){documento.put("criticidade", "3");}	
+				objetos.insert(documento);				
 				atualizaList(list_1);
 				clear();				
 			}
@@ -186,37 +170,21 @@ public class Configuracao_Objetos extends JFrame {
 		JButton btnAtualizar = new JButton("Atualizar");
 		btnAtualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DBCursor cursor = ambientes.find(search_atualizacao);
+				DBCursor cursor = objetos.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();				
 				BasicDBObject newDocument = new BasicDBObject();
-				newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
-				newDocument.put("tipo de ambiente", comboBox.getSelectedItem());
-				if (comboBox_1.getSelectedItem().equals("Térreo"))
-				{
-					newDocument.put("andar", "1");
-				}else{
-					newDocument.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
-				}
-				newDocument.put("nome do ambiente", textField.getText());	
+				newDocument.put("objeto_ID", data.get("objeto_ID").toString());
+				newDocument.put("identificacao do ambiente", comboBox.getSelectedItem());
+				newDocument.put("identificacao do objeto", textField.getText());	
 				newDocument.put("posicao em X", textField_1.getText());
 				newDocument.put("posicao em Y", textField_2.getText());
-				newDocument.put("resumo",  textArea.getText());
 				newDocument.put("descricao", textArea_1.getText());
-				if (!textField_3.getText().isEmpty())
-				{
-				String[] amb_interligados = textField_3.getText().split(";");
-				BasicDBList tipos_ambiente = new BasicDBList();
-				for (int i = 0; i < amb_interligados.length; i++)
-				{
-					tipos_ambiente.add(amb_interligados[i]);
-					atualizaDependencias(textField.getText(), amb_interligados[i]);
-				}
-				newDocument.put("ambientes interligados", tipos_ambiente);
-				}else{newDocument.put("ambientes interligados", "");}
-				BasicDBObject updateObj = new BasicDBObject();
-				
+				if (rdbtnAlta.isSelected()){newDocument.put("criticidade", "1");}	
+				else if (rdbtnMdia.isSelected()){newDocument.put("criticidade", "2");}	
+				else if (rdbtnBaixa.isSelected()){newDocument.put("criticidade", "3");}
+				BasicDBObject updateObj = new BasicDBObject();				
 				updateObj.put("$set", newDocument);								
-				ambientes.update(search_atualizacao, newDocument);
+				objetos.update(search_atualizacao, newDocument);
 				atualizaList(list_1);	
 				clear();				
 			}
@@ -226,21 +194,10 @@ public class Configuracao_Objetos extends JFrame {
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 								
-				DBCursor cursor = ambientes.find(search_atualizacao);
+				DBCursor cursor = objetos.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();				
-				
-				if (!textField_3.getText().isEmpty())
-				{
-					String[] amb_interligados = textField_3.getText().split(";");
-					BasicDBList tipos_ambiente = new BasicDBList();
-					for (int i = 0; i < amb_interligados.length; i++)
-					{
-						tipos_ambiente.add(amb_interligados[i]);
-						removeDependencias(textField.getText(), amb_interligados[i]);
-					}
-				}
 				BasicDBObject updateObj = new BasicDBObject();
-				ambientes.remove(search_atualizacao);				
+				objetos.remove(search_atualizacao);				
 				atualizaList(list_1);	
 				clear();				
 			}
@@ -255,40 +212,17 @@ public class Configuracao_Objetos extends JFrame {
 		
 		BasicDBObject searchQuery = new BasicDBObject();
 		searchQuery.put("predio_ID", "1");
-		DBCursor result = predio.find(searchQuery);
-	    Pattern pattern = Pattern.compile("\"(.*?)\"");
-		DBObject oneDetails = result.next();
-	    String data=oneDetails.get("tipos de ambiente").toString();
-	    Matcher matcher = pattern.matcher(data);
-	    
-		while (matcher.find()) {  
-	        String text = matcher.group(1);
-	        comboBox.addItem(text);
+		DBCursor result = ambientes.find(searchQuery);
+		while (result.hasNext()) {  
+	        comboBox.addItem(result.next().get("identificacao do ambiente").toString());
 		}
 		
-		Integer andares = Integer.parseInt(oneDetails.get("andares").toString());
-		int count = 1;
-		while (count <= andares) {  
-			if (count == 1)
-			{
-				comboBox_1.addItem("Térreo");
-			}else{
-				comboBox_1.addItem(count + "º Andar");
-			}	        
-			count++;
-		}
+				
+		JLabel lblAmbientes_1 = new JLabel("Objetos:");
 		
-		JLabel lblAmbientes_1 = new JLabel("Ambientes:");
+		JLabel lblA = new JLabel("Ambiente:");
 		
-		JLabel lblA = new JLabel("Tipo de Ambiente:");
-		
-
-		
-		JLabel lblNewLabel = new JLabel("Andar:");
-		
-
-		
-		JLabel lblNomeDoAmbiente = new JLabel("Nome do Ambiente:");
+		JLabel lblNomeDoAmbiente = new JLabel("Identificação");
 		
 		textField = new JTextField();
 		textField.addMouseListener(new MouseAdapter() {
@@ -324,55 +258,50 @@ public class Configuracao_Objetos extends JFrame {
 		textField_2.setBorder(border);
 		textField_2.setColumns(10);
 		
-		JLabel lblResumo = new JLabel("Resumo:");
-		
-
-		textArea.setBorder(border);
-		
 		JLabel lblDescrio = new JLabel("Descrição:");
 		
 
 		textArea_1.setBorder(border);
 		
-		JLabel lblAmbientes = new JLabel("Interligações:");
+		JLabel lblCriticidade = new JLabel("Criticidade:");
 		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
+		
 		
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+							.addGroup(gl_panel.createSequentialGroup()
+								.addComponent(lblA)
+								.addGap(42)
+								.addComponent(comboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addGroup(gl_panel.createSequentialGroup()
+								.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+									.addComponent(lblNomeDoAmbiente)
+									.addComponent(lblPosioEmX))
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_panel.createSequentialGroup()
+										.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(lblPosioEmY)
+										.addPreferredGap(ComponentPlacement.UNRELATED)
+										.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE))
+									.addComponent(textField)
+									.addComponent(textArea_1, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
+						.addComponent(lblDescrio)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(lblA)
-							.addGap(27)
-							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblNewLabel)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panel.createSequentialGroup()
-							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblNomeDoAmbiente)
-								.addComponent(lblPosioEmX)
-								.addComponent(lblResumo)
-								.addComponent(lblDescrio)
-								.addComponent(lblAmbientes))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-								.addComponent(textField_3, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-								.addComponent(textArea_1, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-								.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-								.addGroup(gl_panel.createSequentialGroup()
-									.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 94, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(lblPosioEmY)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE))
-								.addComponent(textField))))
-					.addContainerGap(49, Short.MAX_VALUE))
+							.addComponent(lblCriticidade)
+							.addGap(75)
+							.addComponent(rdbtnAlta)
+							.addGap(18)
+							.addComponent(rdbtnMdia)
+							.addGap(18)
+							.addComponent(rdbtnBaixa)))
+					.addContainerGap(51, Short.MAX_VALUE))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -380,8 +309,6 @@ public class Configuracao_Objetos extends JFrame {
 					.addContainerGap()
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblA)
-						.addComponent(lblNewLabel)
-						.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
@@ -394,19 +321,38 @@ public class Configuracao_Objetos extends JFrame {
 						.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblPosioEmX))
 					.addGap(18)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblResumo)
-						.addComponent(textArea, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblDescrio))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(lblDescrio)
+						.addComponent(textArea_1, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))
+					.addGap(10)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblAmbientes)
-						.addComponent(textField_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(70))
+						.addComponent(rdbtnMdia)
+						.addComponent(rdbtnBaixa)
+						.addComponent(rdbtnAlta)
+						.addComponent(lblCriticidade))
+					.addGap(26))
 		);
+		rdbtnAlta.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				rdbtnMdia.setSelected(false);
+				rdbtnBaixa.setSelected(false);
+			}
+		});
+		rdbtnMdia.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnAlta.setSelected(false);
+				rdbtnBaixa.setSelected(false);
+			}
+		});
+		rdbtnBaixa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rdbtnAlta.setSelected(false);
+				rdbtnMdia.setSelected(false);
+			}
+		});
 		panel.setLayout(gl_panel);
 		
 		JScrollPane listScrollPane = new JScrollPane();
@@ -415,47 +361,47 @@ public class Configuracao_Objetos extends JFrame {
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 462, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 436, GroupLayout.PREFERRED_SIZE)
+					.addGap(6)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(list_1, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-						.addComponent(btnAtualizar, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-						.addComponent(btnExcluir, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-						.addComponent(btnFechar, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-						.addComponent(btnCadastrar, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-						.addComponent(lblAmbientes_1))
+						.addComponent(btnCadastrar, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnAtualizar, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnFechar, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGap(4)
+							.addComponent(lblAmbientes_1))
+						.addComponent(list_1, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 300, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(btnCadastrar)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnAtualizar)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnExcluir)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnFechar)
-							.addGap(18)
-							.addComponent(lblAmbientes_1)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(list_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-					.addContainerGap())
+				.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+					.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(btnCadastrar)
+						.addGap(6)
+						.addComponent(btnAtualizar)
+						.addGap(6)
+						.addComponent(btnExcluir)
+						.addGap(6)
+						.addComponent(btnFechar)
+						.addGap(6)
+						.addComponent(lblAmbientes_1)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(list_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addComponent(panel, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 232, GroupLayout.PREFERRED_SIZE))
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
 	
 	public void atualizaList(JList list)
 		{
-		DBCursor cursor = ambientes.find();
-		String ambientes_updated;
+		DBCursor cursor = objetos.find();
+		String objetos_updated;
 		listModel.clear();
 		while (cursor.hasNext()) {
-			ambientes_updated = cursor.next().get("nome do ambiente").toString();
-			listModel.addElement(ambientes_updated);
+			objetos_updated = cursor.next().get("identificacao do objeto").toString();
+			listModel.addElement(objetos_updated);
 		}
 		list.validate();
 	}
@@ -464,96 +410,11 @@ public class Configuracao_Objetos extends JFrame {
 	{
 		textField.setText("");
 		textField_1.setText("");
-		textField_2.setText("");
-		textField_3.setText("");
-		textArea.setText("");
+		textField_2.setText("");		
 		textArea_1.setText("");
+		rdbtnAlta.setSelected(false);
+		rdbtnMdia.setSelected(false);
+		rdbtnBaixa.setSelected(false);
 	}
-	
-	public void atualizaDependencias(String from, String ambiente)
-	{
-		BasicDBObject search_atualizacao = new BasicDBObject();
-		search_atualizacao.put("nome do ambiente", ambiente);
-		DBCursor cursor = ambientes.find(search_atualizacao);
-		BasicDBObject data = (BasicDBObject) cursor.next();	
-		String ambientes_inter = data.get("ambientes interligados").toString();
-		boolean needToAdd = true;
-	    //System.out.println(ambientes_inter);
-	    Matcher matcher = pattern.matcher(ambientes_inter);
-	    String mensagem = "";
-		while (matcher.find()) {  
-	        String text = matcher.group(1);
-	        if (text.equals(from)){needToAdd = false;}
-	        mensagem = mensagem + ";" + text;
-		}
-		mensagem = mensagem + ";" + textField.getText();
 
-		if (needToAdd)
-		{
-			BasicDBObject newDocument = new BasicDBObject();
-			
-			String[] tipos_ambientes = mensagem.substring(1,mensagem.length()).split(";");
-			BasicDBList tipos_ambiente = new BasicDBList();
-			for (int i = 0; i < tipos_ambientes.length; i++)
-			{
-				tipos_ambiente.add(tipos_ambientes[i]);
-			}
-			newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
-			newDocument.put("tipo de ambiente", data.get("tipo de ambiente").toString());
-			newDocument.put("nome do ambiente", data.get("nome do ambiente").toString());
-			newDocument.put("andar", data.get("andar").toString());
-			newDocument.put("posicao em X", data.get("posicao em X").toString());
-			newDocument.put("posicao em Y", data.get("posicao em Y").toString());
-			newDocument.put("resumo", data.get("resumo").toString());
-			newDocument.put("descricao", data.get("descricao").toString());		
-			newDocument.put("ambientes interligados", tipos_ambiente);
-			
-			BasicDBObject updateObj = new BasicDBObject();
-			updateObj.put("$set", newDocument);
-							
-			ambientes.update(search_atualizacao, newDocument);
-		}
-	}
-		
-	public void removeDependencias(String from, String ambiente)
-	{
-		BasicDBObject search_atualizacao = new BasicDBObject();
-		search_atualizacao.put("nome do ambiente", ambiente);
-		DBCursor cursor = ambientes.find(search_atualizacao);
-		BasicDBObject data = (BasicDBObject) cursor.next();	
-		String ambientes_inter = data.get("ambientes interligados").toString();
-		boolean needToRemove = false;
-	    Matcher matcher = pattern.matcher(ambientes_inter);
-	    String mensagem = "";
-		while (matcher.find()) {  
-	        String text = matcher.group(1);
-	        if (text.equals(from)){needToRemove = true;}
-	        else{mensagem = mensagem + ";" + text;}
-		}
-		if (needToRemove)
-		{
-			BasicDBObject newDocument = new BasicDBObject();
-			
-			String[] tipos_ambientes = mensagem.substring(1,mensagem.length()).split(";");
-			BasicDBList tipos_ambiente = new BasicDBList();
-			for (int i = 0; i < tipos_ambientes.length; i++)
-			{
-				tipos_ambiente.add(tipos_ambientes[i]);
-			}
-			newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
-			newDocument.put("tipo de ambiente", data.get("tipo de ambiente").toString());
-			newDocument.put("nome do ambiente", data.get("nome do ambiente").toString());
-			newDocument.put("andar", data.get("andar").toString());
-			newDocument.put("posicao em X", data.get("posicao em X").toString());
-			newDocument.put("posicao em Y", data.get("posicao em Y").toString());
-			newDocument.put("resumo", data.get("resumo").toString());
-			newDocument.put("descricao", data.get("descricao").toString());		
-			newDocument.put("ambientes interligados", tipos_ambiente);
-			
-			BasicDBObject updateObj = new BasicDBObject();
-			updateObj.put("$set", newDocument);
-							
-			ambientes.update(search_atualizacao, newDocument);
-		}
-	}	
 }

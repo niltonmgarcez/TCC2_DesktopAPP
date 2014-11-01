@@ -112,7 +112,7 @@ public class Configuracao_Ambientes extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				search_atualizacao = new BasicDBObject();
-				search_atualizacao.put("nome do ambiente", list_1.getSelectedValue().toString());
+				search_atualizacao.put("identificacao do ambiente", list_1.getSelectedValue().toString());
 				DBCursor cursor = ambientes.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();
 				comboBox.setSelectedItem(data.get("tipo de ambiente").toString());
@@ -123,7 +123,7 @@ public class Configuracao_Ambientes extends JFrame {
 					comboBox_1.setSelectedItem(data.get("andar").toString()+"º Andar");
 				}
 				
-				textField.setText(data.get("nome do ambiente").toString());
+				textField.setText(data.get("identificacao do ambiente").toString());
 				textField_1.setText(data.get("posicao em X").toString());
 				textField_2.setText(data.get("posicao em Y").toString());
 				textArea.setText(data.get("resumo").toString());
@@ -152,6 +152,7 @@ public class Configuracao_Ambientes extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				documento.clear();
 				String tamanhoTabela = String.valueOf(ambientes.getCount() + 1);
+				documento.put("predio_ID","1");
 				documento.put("ambiente_ID", tamanhoTabela);
 				documento.put("tipo de ambiente", comboBox.getSelectedItem());
 				if (comboBox_1.getSelectedItem().equals("Térreo"))
@@ -160,7 +161,7 @@ public class Configuracao_Ambientes extends JFrame {
 				}else{
 					documento.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
 				}
-				documento.put("nome do ambiente", textField.getText());
+				documento.put("identificacao do ambiente", textField.getText());
 				documento.put("posicao em X", textField_1.getText());
 				documento.put("posicao em Y", textField_2.getText());
 				documento.put("resumo", textArea.getText());
@@ -189,6 +190,7 @@ public class Configuracao_Ambientes extends JFrame {
 				DBCursor cursor = ambientes.find(search_atualizacao);
 				BasicDBObject data = (BasicDBObject) cursor.next();				
 				BasicDBObject newDocument = new BasicDBObject();
+				newDocument.put("predio_ID", data.get("predio_ID").toString());
 				newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
 				newDocument.put("tipo de ambiente", comboBox.getSelectedItem());
 				if (comboBox_1.getSelectedItem().equals("Térreo"))
@@ -197,7 +199,7 @@ public class Configuracao_Ambientes extends JFrame {
 				}else{
 					newDocument.put("andar", comboBox_1.getSelectedItem().toString().substring(0, 1));
 				}
-				newDocument.put("nome do ambiente", textField.getText());	
+				newDocument.put("identificacao do ambiente", textField.getText());	
 				newDocument.put("posicao em X", textField_1.getText());
 				newDocument.put("posicao em Y", textField_2.getText());
 				newDocument.put("resumo",  textArea.getText());
@@ -454,7 +456,7 @@ public class Configuracao_Ambientes extends JFrame {
 		String ambientes_updated;
 		listModel.clear();
 		while (cursor.hasNext()) {
-			ambientes_updated = cursor.next().get("nome do ambiente").toString();
+			ambientes_updated = cursor.next().get("identificacao do ambiente").toString();
 			listModel.addElement(ambientes_updated);
 		}
 		list.validate();
@@ -473,7 +475,7 @@ public class Configuracao_Ambientes extends JFrame {
 	public void atualizaDependencias(String from, String ambiente)
 	{
 		BasicDBObject search_atualizacao = new BasicDBObject();
-		search_atualizacao.put("nome do ambiente", ambiente);
+		search_atualizacao.put("identificacao do ambiente", ambiente);
 		DBCursor cursor = ambientes.find(search_atualizacao);
 		BasicDBObject data = (BasicDBObject) cursor.next();	
 		String ambientes_inter = data.get("ambientes interligados").toString();
@@ -498,9 +500,10 @@ public class Configuracao_Ambientes extends JFrame {
 			{
 				tipos_ambiente.add(tipos_ambientes[i]);
 			}
+			newDocument.put("predio_ID", data.get("predio_ID").toString());
 			newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
 			newDocument.put("tipo de ambiente", data.get("tipo de ambiente").toString());
-			newDocument.put("nome do ambiente", data.get("nome do ambiente").toString());
+			newDocument.put("identificacao do ambiente", data.get("identificacao do ambiente").toString());
 			newDocument.put("andar", data.get("andar").toString());
 			newDocument.put("posicao em X", data.get("posicao em X").toString());
 			newDocument.put("posicao em Y", data.get("posicao em Y").toString());
@@ -518,7 +521,7 @@ public class Configuracao_Ambientes extends JFrame {
 	public void removeDependencias(String from, String ambiente)
 	{
 		BasicDBObject search_atualizacao = new BasicDBObject();
-		search_atualizacao.put("nome do ambiente", ambiente);
+		search_atualizacao.put("identificacao do ambiente", ambiente);
 		DBCursor cursor = ambientes.find(search_atualizacao);
 		BasicDBObject data = (BasicDBObject) cursor.next();	
 		String ambientes_inter = data.get("ambientes interligados").toString();
@@ -540,9 +543,10 @@ public class Configuracao_Ambientes extends JFrame {
 			{
 				tipos_ambiente.add(tipos_ambientes[i]);
 			}
+			newDocument.put("predio_ID", data.get("predio_ID").toString());
 			newDocument.put("ambiente_ID", data.get("ambiente_ID").toString());
 			newDocument.put("tipo de ambiente", data.get("tipo de ambiente").toString());
-			newDocument.put("nome do ambiente", data.get("nome do ambiente").toString());
+			newDocument.put("identificacao do ambiente", data.get("identificacao do ambiente").toString());
 			newDocument.put("andar", data.get("andar").toString());
 			newDocument.put("posicao em X", data.get("posicao em X").toString());
 			newDocument.put("posicao em Y", data.get("posicao em Y").toString());

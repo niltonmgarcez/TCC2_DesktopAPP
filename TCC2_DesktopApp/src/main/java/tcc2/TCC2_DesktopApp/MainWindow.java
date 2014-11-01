@@ -104,6 +104,20 @@ public class MainWindow {
 		});
 		mnConfiguraes.add(mntmAmbientes);
 		
+		JMenuItem mntmObjetos = new JMenuItem("Objetos");
+		mntmObjetos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Configuracao_Objetos CO = new Configuracao_Objetos();
+					CO.setVisible(true);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnConfiguraes.add(mntmObjetos);
+		
 		JMenu mnExportar = new JMenu("Exportar");
 		mnExportar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
