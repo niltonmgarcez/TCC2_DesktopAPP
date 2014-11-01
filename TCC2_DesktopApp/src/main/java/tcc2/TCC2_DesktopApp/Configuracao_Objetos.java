@@ -76,11 +76,8 @@ public class Configuracao_Objetos extends JFrame {
 
 	private JTextField textField_1;
 	private JTextField textField_2;
-	
-	JRadioButton rdbtnAlta = new JRadioButton("Alta");
-	
-	JRadioButton rdbtnMdia = new JRadioButton("Média");
-	
+		JRadioButton rdbtnAlta = new JRadioButton("Alta");	
+	JRadioButton rdbtnMdia = new JRadioButton("Média");	
 	JRadioButton rdbtnBaixa = new JRadioButton("Baixa");
 
 
