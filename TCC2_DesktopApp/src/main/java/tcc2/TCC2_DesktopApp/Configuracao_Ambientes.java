@@ -3,7 +3,6 @@
  */
 package tcc2.TCC2_DesktopApp;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -26,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.JButton;
-import javax.swing.ScrollPaneConstants;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -40,7 +38,6 @@ import com.mongodb.MongoClientURI;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.FocusAdapter;
@@ -327,11 +324,15 @@ public class Configuracao_Ambientes extends JFrame {
 		textField_2.setColumns(10);
 		
 		JLabel lblResumo = new JLabel("Resumo:");
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		
 
 		textArea.setBorder(border);
 		
 		JLabel lblDescrio = new JLabel("Descrição:");
+		textArea_1.setWrapStyleWord(true);
+		textArea_1.setLineWrap(true);
 		
 
 		textArea_1.setBorder(border);

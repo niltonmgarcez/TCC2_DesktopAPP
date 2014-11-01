@@ -3,7 +3,6 @@
  */
 package tcc2.TCC2_AndroidApp;
 
-import java.awt.Color;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;

@@ -95,8 +95,11 @@ public class Configuracao_Predio extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
-		final JTextArea textArea  = new JTextArea();;
-		final JTextArea textArea_1  = new JTextArea();;
+		final JTextArea textArea  = new JTextArea();
+		textArea.setWrapStyleWord(true);;
+		final JTextArea textArea_1  = new JTextArea();
+		textArea_1.setLineWrap(true);
+		textArea_1.setWrapStyleWord(true);;
 
 		DBCursor cursor = predio.find();
 		if (cursor.size()>0)

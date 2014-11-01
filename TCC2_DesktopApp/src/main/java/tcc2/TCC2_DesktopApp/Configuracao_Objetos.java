@@ -256,6 +256,8 @@ public class Configuracao_Objetos extends JFrame {
 		textField_2.setColumns(10);
 		
 		JLabel lblDescrio = new JLabel("Descrição:");
+		textArea_1.setLineWrap(true);
+		textArea_1.setWrapStyleWord(true);
 		
 
 		textArea_1.setBorder(border);
