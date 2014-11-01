@@ -117,44 +117,6 @@ public class MainWindow {
 			}
 		});
 		mnConfiguraes.add(mntmObjetos);
-		
-		JMenu mnExportar = new JMenu("Exportar");
-		mnExportar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ProcessBuilder builder = new ProcessBuilder(
-						"cmd /c mongoexport --host ds047440.mongolab.com --port 47440 --username niltongarcez --password trabalho2 --collection Macroambiente --db tcc2_data --out macroambiente.json");
-			        builder.redirectErrorStream(true);
-			        try {
-						Process p = builder.start();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			        
-			}
-		});
-		
-	
-		menuBar.add(mnExportar);
-		
-		JMenuItem mntmArquivoJson = new JMenuItem("Arquivo JSON");
-		mntmArquivoJson.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Macroambiente Macro= new Macroambiente();
-					
-					System.out.println(Macro.getID());
-					System.out.println(Macro.getNome());
-					System.out.println(Macro.getDescricao());
-					System.out.println(Macro.getAmbiente("Sala 203"));
-				} catch (UnknownHostException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-			}
-		});
-		mnExportar.add(mntmArquivoJson);
 	}
 
 }
