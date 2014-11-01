@@ -64,9 +64,7 @@ public class Configuracao_Predio extends JFrame {
 	BasicDBObject search_atualizacao = new BasicDBObject();
 	Pattern pattern = Pattern.compile("\"(.*?)\"");
 
-
 	private JTextField textField_1;
-
 
 	/**
 	 * Launch the application.

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package tcc2.TCC2_DesktopApp;
+package tcc2.TCC2_AndroidApp;
 
 import java.net.UnknownHostException;
 import java.util.Map;

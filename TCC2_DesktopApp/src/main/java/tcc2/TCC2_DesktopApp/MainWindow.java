@@ -38,6 +38,7 @@ public class MainWindow {
 	DBCollection predio = db.getCollection("Macroambiente");
 	DBCollection ambientes = db.getCollection("Ambientes");
 	DBCollection objetos = db.getCollection("Objetos");
+	DBCollection beacons = db.getCollection("Beacons");
 	BasicDBObject documento = new BasicDBObject();
 	/**
 	 * Launch the application.
@@ -117,6 +118,20 @@ public class MainWindow {
 			}
 		});
 		mnConfiguraes.add(mntmObjetos);
+		
+		JMenuItem mntmBeacons = new JMenuItem("Beacons");
+		mntmBeacons.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Configuracao_Beacons CB = new Configuracao_Beacons();
+					CB.setVisible(true);
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mnConfiguraes.add(mntmBeacons);
 	}
 
 }
