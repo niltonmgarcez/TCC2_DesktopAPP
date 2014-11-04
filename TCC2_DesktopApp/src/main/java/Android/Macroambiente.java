@@ -16,7 +16,6 @@ public class Macroambiente {
 	String descricao;
 	ArrayList<Ambiente> listaAmbientes = new ArrayList<Ambiente>();
 	int andares;
-	Ambientes ambientes = new Ambientes();
 	/**
 	 * @param identificacao
 	 * @param descricao
@@ -63,10 +62,6 @@ public class Macroambiente {
 	}
 	public void setAndares(int andares) {
 		this.andares = andares;
-	}	
-	public Ambiente getAmbiente(String Ambiente)
-	{
-		return ambientes.getAmbiente(Ambiente);
 	}
 	
 	
