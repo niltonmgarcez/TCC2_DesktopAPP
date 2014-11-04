@@ -5,12 +5,14 @@ package Android;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,48 +40,72 @@ public class Ambientes {
 	 */
 	public Ambientes() throws IOException {
 		String listAmbientes = "";
+		Ambiente ambienteCollection = null;
 		URL url = new URL("https://api.mongolab.com/api/1/databases/tcc2_data/collections/Ambientes?apiKey=PpJuOpEhdLdCEELSCAr_26upkPcsYMJF");
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-		BufferedWriter out = new BufferedWriter(new FileWriter("C:\\Users\\Nilton Garcez\\testes.txt"));
+				
+		BufferedReader in = new BufferedReader(new FileReader("C:\\Users\\nilton_garcez\\texto.txt"));
 
 		String ambiente = in.readLine();
-		System.out.println(ambiente);
-		
 		String[] macro = ambiente.split("} , ");
-        //macro[1] = "\"predio_ID" + macro[1] ;
-        //macro[1] = macro[1].replace("} ]", "");
-		for (int i = 0; i< macro.length;i++)
+		
+		for (int i = 0; i< macro.length; i++)
 		{
-			System.out.println(macro[i]);			
+			if (!(i%2 == 0)) 
+			{
+				System.out.println(macro[i]);
+				Pattern p = Pattern.compile("\\[.*\"]");			
+		        Matcher m = p.matcher(macro[i]);
+		        if(m.find())
+		        {
+		        	listAmbientes = (String) m.group().subSequence(1, m.group().length()-1);
+		        	listAmbientes = listAmbientes.substring(1,listAmbientes.length());
+		        	listAmbientes = listAmbientes.replace("\"", "");
+		        } 
+		        System.out.println(listAmbientes);
+		        macro[i] = macro[i].replace(" , \"ambientes interligados\" : [" + listAmbientes + "]", "");
+		                
+		        String[] ambienteObjeto = macro[i].split(" , ");
+		        System.out.println(macro.length);
+		 
+		        	String data[] = ambienteObjeto[2].split(":");
+		            String tipo = data[1].replace("\"", "");
+		            tipo = tipo.substring(1,tipo.length());		            
+		            System.out.println(tipo);
+		            
+		            String data1[] = ambienteObjeto[3].split(":");
+		            String andar = data1[1].replace("\"", "");
+		            andar = andar.substring(1,andar.length());
+		            System.out.println(andar);		 
+		            
+		            String data2[] = ambienteObjeto[4].split(":");
+		            String identificacao = data2[1].replace("\"", "");
+		            identificacao = identificacao.substring(1,identificacao.length());
+		            System.out.println(identificacao);
+		            
+		            String data3[] = ambienteObjeto[5].split(":");
+		            String posX = data3[1].replace("\"", "");
+		            posX = posX.substring(1,posX.length());
+		            System.out.println(posX);
+		            
+		            String data4[] = ambienteObjeto[6].split(":");
+		            String posY = data4[1].replace("\"", "");
+		            posY = posY.substring(1,posY.length());
+		            System.out.println(posY);
+		            
+		            String data5[] = ambienteObjeto[7].split(":");
+		            String resumo = data5[1].replace("\"", "");
+		            resumo = resumo.substring(1,resumo.length());
+		            System.out.println(resumo);
+		            
+		            String data6[] = ambienteObjeto[8].split(":");
+		            String descricao = data6[1].substring(2, data6[1].lastIndexOf("\""));
+		            System.out.println(descricao);
+		        
+		        ambienteCollection = new Ambiente(tipo, Integer.parseInt(andar), identificacao, Float.parseFloat(posX), Float.parseFloat(posY), resumo, descricao, listAmbientes);
+		        listaAmbientes.add(ambienteCollection);
+			}			
 		}
-		
-		
-		/**
-		String[] macro = in.readLine().split("} , \"predio_ID");
-        macro[1] = "\"predio_ID" + macro[1] ;
-        macro[1] = macro[1].replace("} ]", "");
-        
-        Pattern p = Pattern.compile("\\[.*]");
-        Matcher m = p.matcher(macro[1]);
-        if(m.find())
-        listAmbientes = (String) m.group().subSequence(1, m.group().length()-1); 
-        System.out.println(listAmbientes);
-        
-        macro[1] = macro[1].replace("\"listaAmbientes\" : [" + listAmbientes + "] , ", "");
-        String[] macroambiente = macro[1].split(" , ");
-        
-        String data[] = macroambiente[1].split(":");
-        String ident = data[1].replace("\"", "");
-        ident = ident.substring(1,ident.length());
-       
-        String data1[] = macroambiente[2].split(":");
-        String desc = data1[1].replace("\"", "");
-        desc = desc.substring(1,desc.length());
-                
-        String data2[] = macroambiente[3].split(":");
-        String and = data2[1].replace("\"", "");
-        and = and.trim();**/
+
 	}
 	
 	public ArrayList<Ambiente> getListaAmbientes()
@@ -103,7 +129,6 @@ public class Ambientes {
 	public static void main(String[] args) throws IOException {
 				
 		Ambientes amb = new Ambientes();
-		//Ambiente a = amb.getAmbiente("Hall de Entrada");
-		//System.out.println(a.getDescricao());
+		System.out.println(amb.getListaAmbientes().get(2).getIdentificacao());
 	}
 }
